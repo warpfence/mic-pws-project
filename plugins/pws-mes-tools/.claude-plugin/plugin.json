@@ -1,0 +1,11 @@
+{
+  "name": "pws-mes-tools",
+  "version": "1.0.0",
+  "description": "피플웍스 애리조나 신공장 MES 프로젝트 작업 도구 번들 — MSSQL DB 조회 규칙, 사용자 메뉴얼(PPTX) 작성, 프로젝트 표준 규칙 설치 스킬과 mssql MCP 서버를 포함한다.",
+  "author": {
+    "name": "MICUBE",
+    "email": "ksstpgns1@gmail.com"
+  },
+  "keywords": ["mes", "peopleworks", "mssql", "smartux", "infac"],
+  "mcpServers": "./.mcp.json"
+}
