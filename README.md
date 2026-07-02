@@ -19,8 +19,8 @@ git 저장소 또는 로컬 경로 둘 다 가능합니다.
 /plugin marketplace add "D:\SynologyDrive\...\00.sourcecode\mic-pws-project"
 
 # git 저장소로 (팀 배포)
-/plugin marketplace add <git URL>
-/plugin marketplace add <github-계정>/mic-pws-project   # GitHub 단축표기
+/plugin marketplace add https://github.com/warpfence/mic-pws-project.git
+/plugin marketplace add warpfence/mic-pws-project   # GitHub 단축표기
 ```
 
 ### 2) 플러그인 설치
