@@ -25,31 +25,28 @@
 
 ## MSSQL 접속 설정 (필수)
 
-이 플러그인의 `mssql` MCP 서버는 접속 문자열을 **환경변수**에서 읽습니다.
+이 플러그인의 `mssql` MCP 서버는 접속 문자열을 환경변수 `MSSQL_CONNECTION_STRING` 에서 읽습니다.
 자격증명은 저장소에 커밋되지 않습니다.
 
-1. `.env.example` 를 복사해 `.env` 를 만들고 실제 값을 채웁니다.
+프로젝트 루트에 SmartUX MES 표준 파일 `Config\Datasource\mssql-datasource.json` 이 있다면, `pws-project-init` 스킬을 실행하세요. ("프로젝트 규칙 설치", "mssql 접속정보 설정" 등으로 요청)
+
+스킬이 자동으로 처리하는 내용:
+
+1. `Config\Datasource\mssql-datasource.json` 의 `properties.Url`(JDBC 형식), `Username`, `Password` 를 읽는다.
+2. ADO.NET 형식 연결 문자열로 변환한다.
 
    ```
-   MSSQL_CONNECTION_STRING=Data Source=192.168.x.x; Initial Catalog=SITE_PEOPLEWORKS; User ID=pws_select; Password=****; TrustServerCertificate=True;
+   Data Source=<host>,<port>; Initial Catalog=<db>; User ID=<user>; Password=<password>; TrustServerCertificate=True;
    ```
 
-2. claude 실행 전에 환경변수로 로드합니다.
+3. 프로젝트 `.claude/settings.local.json` 의 `env.MSSQL_CONNECTION_STRING` 에 기록한다. (다른 설정은 보존)
+4. `.mcp.json` 의 `${MSSQL_CONNECTION_STRING}` 이 이 값으로 자동 치환된다. claude 재시작만 하면 적용된다.
 
-   - PowerShell:
-     ```powershell
-     Get-Content .env | ForEach-Object { if ($_ -match '^\s*([^#=]+)=(.*)$') { Set-Item "env:$($matches[1].Trim())" $matches[2].Trim() } }
-     ```
-   - Git Bash / Linux:
-     ```bash
-     export $(grep -v '^#' .env | xargs)
-     ```
-
-3. `.mcp.json` 의 `${MSSQL_CONNECTION_STRING}` 이 이 값으로 치환됩니다.
-
-> ⚠️ `.env` 는 절대 커밋하지 마세요. (루트 `.gitignore` 에 이미 제외되어 있습니다)
+> `mssql-datasource.json` 을 찾지 못하면 스킬이 즉시 알려주고 종료합니다.
+> ⚠️ `.claude/settings.local.json` 에 비밀번호가 평문으로 기록되므로, 프로젝트 `.gitignore` 에 반드시 포함되어 있어야 합니다. (스킬이 자동으로 확인·추가합니다)
 
 ## 사용 후 규칙 적용
 
 설치 후 `pws-project-init` 스킬을 실행하면 현재 프로젝트 `CLAUDE.md` 에
-표준 규칙(언어·어조, Git 커밋 규칙, MSSQL 조회 규칙, 파일 인코딩)이 자동으로 심어집니다.
+표준 규칙(언어·어조, Git 커밋 규칙, MSSQL 조회 규칙, 파일 인코딩)이 자동으로 심어지고,
+위 MSSQL 접속정보도 함께 자동 설정됩니다.

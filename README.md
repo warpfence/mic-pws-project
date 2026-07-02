@@ -30,21 +30,14 @@ git 저장소 또는 로컬 경로 둘 다 가능합니다.
 ```
 형식은 `플러그인명@마켓플레이스명` 입니다.
 
-### 3) MSSQL 접속 설정 (설치 후 1회)
+### 3) 프로젝트 규칙 + MSSQL 접속 설정 (설치 후 1회, `pws-project-init` 스킬)
 
-`mssql` MCP 는 접속문자열을 환경변수에서 읽습니다. claude 실행 **전에** 설정하세요.
+`pws-project-init` 스킬을 실행하면 아래 두 가지가 한 번에 처리됩니다.
 
-```powershell
-# .env.example 복사 → .env 에 실제 값 기입 후 로드
-Get-Content .env | ForEach-Object { if ($_ -match '^\s*([^#=]+)=(.*)$') { Set-Item "env:$($matches[1].Trim())" $matches[2].Trim() } }
-```
-> 미설정 시 `mssql` MCP 만 연결 실패하고, 나머지 스킬은 정상 동작합니다.
-> 자세한 접속 설정은 [`plugins/pws-mes-tools/README.md`](./plugins/pws-mes-tools/README.md) 참고.
+1. **CLAUDE.md 표준 규칙 설치** — 언어·어조, Git 커밋, MSSQL 조회, 파일 인코딩 규칙을 현재 프로젝트 `CLAUDE.md` 에 심습니다.
+2. **MSSQL 접속정보 자동 설정** — 프로젝트 루트의 `Config\Datasource\mssql-datasource.json` 을 읽어 `mssql` MCP 접속 문자열을 `.claude/settings.local.json` 의 `env.MSSQL_CONNECTION_STRING` 에 자동으로 기록합니다. claude 재시작 시 바로 적용됩니다.
 
-### 4) 프로젝트 규칙 심기 (선택)
-
-설치 후 `pws-project-init` 스킬을 실행하면 현재 프로젝트 `CLAUDE.md` 에
-표준 규칙(언어·어조, Git 커밋, MSSQL 조회, 파일 인코딩)이 자동으로 설치됩니다.
+> `Config\Datasource\mssql-datasource.json` 이 없는 프로젝트라면 스킬이 즉시 알려주고 종료합니다. 자세한 내용은 [`plugins/pws-mes-tools/README.md`](./plugins/pws-mes-tools/README.md) 참고.
 
 ## 관리 명령
 
@@ -64,12 +57,11 @@ Get-Content .env | ForEach-Object { if ($_ -match '^\s*([^#=]+)=(.*)$') { Set-It
 mic-pws-project/
 ├── .claude-plugin/
 │   └── marketplace.json          # 마켓플레이스 정의
-├── .gitignore                    # .env 등 자격증명 제외
+├── .gitignore                    # 자격증명 파일 제외
 └── plugins/
     └── pws-mes-tools/
         ├── .claude-plugin/plugin.json
         ├── .mcp.json             # mssql MCP (접속문자열은 env 참조)
-        ├── .env.example          # MSSQL_CONNECTION_STRING 예시
         ├── README.md
         └── skills/
             ├── mssql-query/
